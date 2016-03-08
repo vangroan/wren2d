@@ -1,4 +1,6 @@
 
+env
+
 # SCons
 .sconsign.dblite
 build
