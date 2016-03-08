@@ -1,17 +1,29 @@
 
+extern "C" {
+    #include <wren.h>
+}
 
-#include <wren.h>
+#include <stdio.h>
 
+void writeFn(WrenVM* vm, const char* text) {
+    printf(text);
+}
 
 int main(void) {
 
+    printf("In C\n");
+
     WrenConfiguration config;
     wrenInitConfiguration(&config);
-    //WrenVM* vm = wrenNewVM(&config);
 
-    //wrenInterpret(vm, "System.print(\"Hello World\")");
+    config.writeFn = writeFn;
 
-    //wrenFreeVM(vm);
+    WrenVM* vm = wrenNewVM(&config);
+
+    WrenInterpretResult result = wrenInterpret(vm, "System.print(\"Hello World\")");
+    printf("Result: %d\n", result);
+
+    wrenFreeVM(vm);
 
     return 0;
 }
