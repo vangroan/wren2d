@@ -1,17 +1,17 @@
 
 
-#include "../lib/wren/src/include/wren.h"
+#include <wren.h>
 
 
 int main(void) {
 
     WrenConfiguration config;
     wrenInitConfiguration(&config);
-    WrenVM* vm = wrenNewVM(&config);
+    //WrenVM* vm = wrenNewVM(&config);
 
-    wrenInterpret(vm, "System.print(\"Hello World\")");
+    //wrenInterpret(vm, "System.print(\"Hello World\")");
 
-    wrenFreeVM(vm);
+    //wrenFreeVM(vm);
 
     return 0;
 }
