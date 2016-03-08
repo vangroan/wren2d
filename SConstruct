@@ -3,15 +3,14 @@ import os
 
 env = Environment(
     tools=['mingw'], 
-    CPPPATH='lib/wren/src/include;lib/wren/src/vm/;lib/wren/src/optional/',
-    CCFLAGS='-Wall',
-    CFLAGS='-Wall -std=c99',
+    CPPPATH='lib/wren/src/include',
+    CCFLAGS='-Wall -v',
+    CFLAGS='-Wall -std=c99 -DWREN_OPT_META=0 -DWREN_OPT_RANDOM=0',
     ENV={'PATH' : os.environ['PATH']},
     )
 sources = (
-        Glob('lib/wren/src/optional/*.c'),
-        Glob('lib/wren/src/vm/*.c'),
         Glob('src/*.cpp'),
+        Glob('lib/wren/src/vm/*.c'),
     )
 env.Program('build/wren2d', sources)
 
