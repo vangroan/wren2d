@@ -10,3 +10,12 @@ class Graphics {
 
 var g = Graphics.new()
 g.draw()
+
+class MyClass {
+    foreign static add(a, b)
+    foreign static sub(a, b)
+}
+
+System.print("Add: %(MyClass.add(7, 11))")
+System.print("Add: %(MyClass.add(7, 11))")
+System.print("Sub: %(MyClass.sub(7, 11))")
