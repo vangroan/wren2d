@@ -49,10 +49,10 @@ const foreignFuncReg_t methods[] = {
 };
 
 WrenForeignMethodFn bindForeignMethod(WrenVM* vm,
-                                                const char* module,
-                                                const char* className,
-                                                bool isStatic,
-                                                const char* signature) {
+                                    const char* module,
+                                    const char* className,
+                                    bool isStatic,
+                                    const char* signature) {
     
     printf("Loading:\n");
     printf("Module: %s; Class: %s; Static: %s; Signature: %s\n",
