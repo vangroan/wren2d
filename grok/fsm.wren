@@ -36,18 +36,18 @@ class Fsm {
 class WalkState {
     construct new() {}
     
-    onEnter() {}
+    onEnter() { System.print("Walk Enter") }
     
-    onExit() {}
+    onExit() { System.print("Walk Exit") }
 }
 
 
 class IdleState {
     construct new() {}
     
-    onEnter() {}
+    onEnter() { System.print("Idle Enter") }
     
-    onExit() {}
+    onExit() { System.print("Idle Exit") }
 }
 
 
