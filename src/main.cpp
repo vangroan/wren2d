@@ -7,6 +7,7 @@ extern "C" {
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <vector>
 
 
 struct foreignFuncReg_t {
@@ -26,6 +27,8 @@ struct foreignFuncReg_t {
     }
 };
 
+// Foreign Methods
+
 
 void myAddFunc(WrenVM* vm) {
     double a = wrenGetSlotDouble(vm, 1);
@@ -41,6 +44,10 @@ void mySubFunc(WrenVM* vm) {
     wrenSetSlotDouble(vm, 0, a-b);
 }
 
+void incFooBar(WrenVM* vm) {
+    int* fd = (int*)wrenGetSlotForeign(vm, 0);
+    *fd += 1;
+}
 
 const foreignFuncReg_t methods[] = {
     {"main", "MyClass", true, "add(_,_)", myAddFunc},
@@ -49,10 +56,7 @@ const foreignFuncReg_t methods[] = {
 };
 
 WrenForeignMethodFn bindForeignMethod(WrenVM* vm,
-                                    const char* module,
-                                    const char* className,
-                                    bool isStatic,
-                                    const char* signature) {
+    const char* module, const char* className, bool isStatic, const char* signature) {
     
     printf("Loading:\n");
     printf("Module: %s; Class: %s; Static: %s; Signature: %s\n",
@@ -88,6 +92,51 @@ WrenForeignMethodFn bindForeignMethod(WrenVM* vm,
     return NULL;
 }
 
+// Foreign Class
+
+struct ForeignClassReg {
+    char* module;
+    char* className;
+    WrenForeignMethodFn initializer;
+    WrenFinalizerFn finalizer;
+};
+
+void createFooBar(WrenVM* vm) {
+    printf("Create FooBar");
+    int* fd = (int*)wrenSetSlotNewForeign(vm, 0, 0, sizeof(int));
+    *fd = 99;
+}
+
+void destroyFooBar(void* data) {
+    printf("Destroy FooBar");
+}
+
+const ForeignClassReg classes[] = {
+    {"main", "FooBar", createFooBar, destroyFooBar},
+    {NULL, NULL, NULL, NULL}
+};
+
+WrenForeignClassMethods bindForeignClass(
+    WrenVM* vm, const char* module, const char* className) {
+
+    int i = 0;
+    ForeignClassReg c = classes[i];
+    WrenForeignClassMethods m;
+    m.allocate = NULL;
+    m.finalize = NULL;
+    while (c.module != NULL) {
+        if (strcmp(c.module, module) == 0
+            && strcmp(c.className, className) == 0) {
+            m.allocate = c.initializer;
+            m.finalize = c.finalizer;
+            return m;
+        } else {
+            c = classes[++i];
+        }
+    }
+    return m;
+}
+
 void writeFn(WrenVM* vm, const char* text) {
     printf(text);
 }
@@ -111,6 +160,7 @@ int main(void) {
     wrenInitConfiguration(&config);
 
     config.bindForeignMethodFn = bindForeignMethod;
+    config.bindForeignClassFn = bindForeignClass;
     config.writeFn = writeFn;
 
     WrenVM* vm = wrenNewVM(&config);
